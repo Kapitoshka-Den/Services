@@ -24,6 +24,12 @@ namespace ServiceApp
         public MainWindow()
         {
             InitializeComponent();
+            //foreach (var test in Helper.GetContext().Services)
+            //{
+            //    if (test.MainImagePath == null) continue;
+            //    test.MainImagePath = test.MainImagePath.Replace("\\Images\\\\Image\\\\Image\\", "\\Images\\");
+            //}
+            //Helper.GetContext().SaveChanges();
         }
 
         private void Sigin_Click(object sender, RoutedEventArgs e)
@@ -33,21 +39,16 @@ namespace ServiceApp
             {
                 if (codeWindow.ShowDialog() == true)
                 {
-                    ServicesListWindow window = new ServicesListWindow(true);
+                    Helper._isAdmin = true;
                 }
-               
             }
-            else
-            {
-                ServicesListWindow window = new ServicesListWindow(false);
-
-                window.Show();
-                Close();
-                
-            }
-           
-
             
+            ServicesListWindow window = new ServicesListWindow();
+            window.Show();
+            Close();
+
+
+
         }
     }
 }

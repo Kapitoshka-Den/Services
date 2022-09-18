@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ServiceApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Icon="/Resources/school_logo.ico"
+        Title="MainWindow" Height="450" Width="800" >
     <Window.Resources>
         <Style TargetType="RadioButton">
             <Setter Property="Margin" Value="10"/>

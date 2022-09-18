@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="ServicesListWindow" Height="450" Width="800"
         MinWidth="800" MinHeight="450"
-        xmlns:convert="clr-namespace:ServiceApp.Converters">
+        xmlns:convert="clr-namespace:ServiceApp.Converters" Icon="/Resources/school_logo.ico">
     <Window.Resources>
         <convert:Sales x:Key="Sales"/>
         <convert:FullPathConverter x:Key="FullPath"/>
@@ -35,67 +35,116 @@
                       Height="30"
                       Name="FiltrCombo"
                       Margin="10,0,10,0"
+                      SelectedIndex="0"
                       SelectionChanged="FiltrCombo_SelectionChanged">
-                <ComboBoxItem IsSelected="True"
-                              Content="Выберите фильрацию"/>
-                <ComboBoxItem Content="Веь список"
-                              Name="Filtr0"/>
-                <ComboBoxItem Content="0-5"
-                              Name="Filtr5"/>
-                <ComboBoxItem Content="5-15"
-                              Name="Filtr15"/>
-                <ComboBoxItem Content="15-30"
-                              Name="Filtr30"/>
-                <ComboBoxItem Content="30-70"
-                              Name="Filtr70"/>
-                <ComboBoxItem Content="70-100"
-                              Name="Filtr100"/>
+                
             </ComboBox>
             <ComboBox Width="200"
                       Height="30"
                       Name="SortCombo"
-                      SelectionChanged="ComboBox_SelectionChanged">
-                <ComboBoxItem Visibility="Collapsed" IsSelected="True"
-                              Content="Выберите сортировку"/>
-                <ComboBoxItem Name="DescCost"
-                              Content="По убыванию цены"/>
-                <ComboBoxItem Name="AsdCost"
-                              Content="По возрастанию цены"/>
+                      SelectedIndex="0"
+                      SelectionChanged="SortCombo_SelectionChanged">
+                
             </ComboBox>
         </StackPanel>
         <ListBox Name="ServicesList"
                  Grid.Row="1"
-                 Margin="10">
+                 Margin="10"
+                 HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="10">
-                        <Image Source="{Binding Path=MainImagePath}"/>
-                            <StackPanel >
-                                <TextBlock Tag="ServicesName"
-                                           Text="{Binding Path=Title}"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Tag="{Binding Path=Id}"
-                                               Text="{Binding Path=Cost}"/>
-                                    <TextBlock Tag="discountCost"
-                                               Text="{Binding Path=Id, Converter={StaticResource Sales}}"/>
-                                    <TextBlock Tag="Time"
-                                               Text="{Binding StringFormat= рублей за {0} минут, Path=DurationInSeconds}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="радактировать"
-                                        Name="Edit"
-                                            Visibility="{Binding }"
-                                            Click="Edit_Click"
-                                        Tag="{Binding Path=Id}"/>
-                                    <Button Content="удалить"
-                                        Visibility="{Binding }"
-                                            Name="Delete"
-                                            Click="Delete_Click"
-                                        Tag="{Binding Path=Id}"/>
-                                </StackPanel>
+                    <Border BorderBrush="Black"
+                            BorderThickness="1"
+                            HorizontalAlignment="Stretch">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#7F39E417"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Discount}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Image Source="{Binding Path=MainImagePath}"
+                                   Height="100"
+                                   Width="100"
+                                   Margin="5"
+                                   Grid.RowSpan="4"/>
+                            <TextBlock Grid.Column="1"
+                                       Margin="5"
+                                       Text="{Binding Path=Title}"/>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Column="1"
+                                        Grid.Row="1">
+
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       Text="{Binding Path=Cost}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Discount}" Value="{x:Null}">
+                                                    <Setter Property="TextDecorations" Value="None"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Grid.Row="1"
+                                       Grid.Column="2"
+                                       Margin="5"
+                                       Text="{Binding Path=CostWithDisount}"/>
+                                <TextBlock Grid.Column="3"
+                                       Margin="5"
+                                       Grid.Row="1"
+                                       Text="{Binding Path=DurationInMinute, StringFormat= рублей за {0} минут}"/>
                             </StackPanel>
-                        </StackPanel>
+                            <TextBlock Margin="5"
+                                       Grid.Column="1"
+                                       Grid.Row="2"
+                                Text="{Binding Discount, StringFormat= * {0}%}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Discount}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Button Grid.Column="1"
+                                    Grid.Row="3"
+                                    Name="btnUpdate"
+                                    Click="btnUpdate_Click"
+                                    Visibility="{Binding Path=IsAdmin}"
+                                    Content="редактировать">
+                            </Button>
+                            <Button Grid.Column="2"
+                                    Grid.Row="3"
+                                    Name="btnDelete"
+                                    Visibility="{Binding Path=IsAdmin}"
+                                    Click="btnDelete_Click"
+                                    Content="удалить"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -109,6 +158,7 @@
                 Margin="10"
                 Width="100"
                 Height="30"
+                    Visibility="{Binding }"
                 Content="Добавить услугу"
                 Name="AddService"
                 Click="AddService_Click"/>

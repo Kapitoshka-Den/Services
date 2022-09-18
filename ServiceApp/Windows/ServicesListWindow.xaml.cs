@@ -24,135 +24,133 @@ namespace ServiceApp.Windows
 
     public partial class ServicesListWindow : Window
     {
+        private List<string> _sortBy = new()
+        { 
+        "по возрастанию", "по убыванию"
+        };
+        private List<string> _filterBy = new()
+        { 
+        "Все", "от 0 до 5%", "от 10 до 15%", "от 15 до 30%", "от 30 до 70%", "от 70 до 100%"
+        };
         int maxSizeList;
         int allElemList;
 
         ObservableCollection<Service> services;
+        public Visibility Visibility { get; set; } = Helper._isAdmin ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility isAdmin { get; set; } = Visibility.Collapsed;
 
-        ServicesContext context = new ServicesContext();
-        public ServicesListWindow(bool roleValue)
+        public ServicesListWindow()
         {
-            DataContext = isAdmin;
+            DataContext = Visibility;
+
             InitializeComponent();
-            if (roleValue)
-            {
-                Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Visibility = Visibility.Collapsed;
-            }
-            var sources = context.Services.Select(t => t).ToList();
-            services = new ObservableCollection<Service>(sources);
+            FiltrCombo.ItemsSource = _filterBy;
+            SortCombo.ItemsSource = _sortBy;
+            LoadData();
+            //var sources = Helper.GetContext().Services.ToList();
+            //services = new ObservableCollection<Service>(sources);
 
-            maxSizeList = services.Count;
-            allElemList = services.Count;
-            ElemCount();
-
-            ServicesList.ItemsSource = services;
+            //maxSizeList = services.Count;
+            //allElemList = services.Count;
+           
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            Button btn = sender as Button;
-            int id = Convert.ToInt16(btn.Tag);
-            var query = context.Services.Where(s => s.Id == id).FirstOrDefault();
+        //private void Edit_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Button btn = sender as Button;
+        //    int id = Convert.ToInt16(btn.Tag);
+        //    var query = Helper.GetContext().Services.Where(s => s.Id == id).FirstOrDefault();
 
-            EditService editService = new EditService(query);
-            editService.ShowDialog();
-        }
-
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            int id = Convert.ToInt32(button.Tag.ToString());
-
-            var query = context.Services.Where(t => t.Id == id).First();
-            services.Remove(query);
-            context.Services.Remove(query);
-            context.SaveChanges();
-
-        }
-
+        //    EditService editService = new EditService(query);
+        //    editService.ShowDialog();
+        //}
         private void AddService_Click(object sender, RoutedEventArgs e)
         {
             EditService editService = new EditService();
             editService.ShowDialog();
-
+            LoadData(); 
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+       private void LoadData()
         {
-            Sort();
-        }
-        private void Sort()
-        {
-            if(SortCombo == null) return;
-            if (SortCombo.SelectedItem == DescCost)
+            var services = Helper.GetContext().Services.ToList();
+            switch (SortCombo.SelectedIndex)
             {
-                ServicesList.ItemsSource = services.OrderByDescending(t => t.Cost).ToList();
+                case 0:
+                    services = services.OrderBy(t => t.Discount.HasValue ? t.CostWithDisount : t.Cost).ToList();
+                    break;
+                case 1:
+                    services = services.OrderByDescending(t => t.Discount.HasValue ? t.CostWithDisount : t.Cost).ToList();
+                    break;
             }
-            else if(SortCombo.SelectedItem == AsdCost)
+            switch (FiltrCombo.SelectedIndex)
             {
-                ServicesList.ItemsSource = services.OrderBy(t=>t.Cost).ToList();
+                case 1:
+                    services = services.Where(t => t.Discount < 5 || t.Discount == null).ToList();
+                    break;
+                case 2:
+                    services = services.Where(t => t.Discount >= 5 && t.Discount < 15).ToList();
+                    break;
+                case 3:
+                    services = services.Where(t => t.Discount >= 15 && t.Discount < 30).ToList();
+                    break;
+                case 4:
+                    services = services.Where(t => t.Discount >= 30 && t.Discount < 70).ToList();
+                    break;
+                case 5:
+                    services = services.Where(t => t.Discount >= 70 && t.Discount < 100).ToList();
+                    break;
             }
-        }
-        private void Filtration()
-        {
-            if(services == null) return;
-            ObservableCollection<Service> queryServices;
-            if(FiltrCombo.SelectedItem == Filtr0)
-            {
-                services = new ObservableCollection<Service>(context.Services.Select(t => t).ToList());
-            }
-            if(FiltrCombo.SelectedItem == Filtr5)
-            {
-                services = new ObservableCollection<Service>(context.Services.Where(t => t.Discount < 5 || t.Discount == null).ToList());
-            }
-            if (FiltrCombo.SelectedItem == Filtr15)
-            {
-                services = new ObservableCollection<Service>(context.Services.Where(t => t.Discount >= 5 && t.Discount < 15 ).ToList());
-            }
-            if (FiltrCombo.SelectedItem == Filtr30)
-            {
-                services = new ObservableCollection<Service>(context.Services.Where(t => t.Discount >= 15 && t.Discount < 30 ).ToList());
-            }
-            if (FiltrCombo.SelectedItem == Filtr70)
-            {
-                services = new ObservableCollection<Service>(context.Services.Where(t => t.Discount >= 30 && t.Discount < 70 ).ToList());
-            }
-            if(FiltrCombo.SelectedItem == Filtr100)
-            {
-                services = new ObservableCollection<Service>(context.Services.Where(t => t.Discount >= 70 && t.Discount < 100 ).ToList());
-            }
-            allElemList = services.Count;
+
+            services = services.Where(x => x.Title.ToLower().Contains(SerachingText.Text.ToLower()) || (!string.IsNullOrWhiteSpace (x.Description) && x.Description.ToLower().Contains(SerachingText.Text))).ToList();
             ServicesList.ItemsSource = services;
+            Counter.Text = $"{services.Count} из {Helper.GetContext().Services.Count()}";
         }
+        
+        
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            Service service = (sender as Button).DataContext as Service;
+
+            EditService edit = new EditService(service);
+            edit.ShowDialog();
+            LoadData();
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Service service = (sender as Button).DataContext as Service;
+            if (service.ClientServices.Count != 0)
+            {
+                MessageBox.Show("На данную услугу есть записи","Удаление",MessageBoxButton.OK,MessageBoxImage.Error);
+                return;
+            }
+            var message = MessageBox.Show("Вы действительно хотите удалить?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (message == MessageBoxResult.Yes)
+            {
+                
+                Helper.GetContext().Remove(service);
+                Helper.GetContext().SaveChanges();
+                LoadData();
+            }
+            
+        }
+
         private void FiltrCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Filtration();
-            ElemCount();
-            Sort();
+            LoadData();
         }
 
-        private void ElemCount()
+        private void SortCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (services == null) return;
-            Counter.Text = $"{allElemList} из {maxSizeList}";
+            LoadData();
         }
 
         private void SerachingText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Filtration();
-            services = new ObservableCollection<Service>(services.Where(t => t.Title.ToLower().Contains(SerachingText.Text)).ToList());
-            if(SerachingText.Text == "")
-            {
-                services = new ObservableCollection<Service>(context.Services.Select(t => t).ToList());
-            }
-            ServicesList.ItemsSource = services;
-            Sort();
+            LoadData();
         }
     }
 }
