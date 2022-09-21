@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\school_logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\for company.jpg" />
+    <None Remove="Images\online lessons.jpg" />
+    <None Remove="Images\Английский язык.jpg" />
+    <None Remove="Images\Испанский язык.jpg" />
+    <None Remove="Images\Итальянский язык.jpg" />
+    <None Remove="Images\киноклуб.jpg" />
+    <None Remove="Images\Китайский язык.jpg" />
+    <None Remove="Images\Немецкий язык.png" />
+    <None Remove="Images\Подготовка к экзамену ACT.png" />
+    <None Remove="Images\Подготовка к экзамену GMAT.png" />
+    <None Remove="Images\Подготовка к экзамену GRE.jpeg" />
+    <None Remove="Images\Подготовка к экзамену IELTS.jpg" />
+    <None Remove="Images\Подготовка к экзамену SAT.png" />
+    <None Remove="Images\Подготовка к экзамену TOEFL.jpg" />
+    <None Remove="Images\Португальский язык.jpg" />
+    <None Remove="Images\Французский язык.jpg" />
+    <None Remove="Images\Японский язык.jpg" />
+    <None Remove="Resources\school_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\school_logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\for company.jpg" />
+    <Resource Include="Images\online lessons.jpg" />
+    <Resource Include="Images\Английский язык.jpg" />
+    <Resource Include="Images\Испанский язык.jpg" />
+    <Resource Include="Images\Итальянский язык.jpg" />
+    <Resource Include="Images\киноклуб.jpg" />
+    <Resource Include="Images\Китайский язык.jpg" />
+    <Resource Include="Images\Немецкий язык.png" />
+    <Resource Include="Images\Подготовка к экзамену ACT.png" />
+    <Resource Include="Images\Подготовка к экзамену GMAT.png" />
+    <Resource Include="Images\Подготовка к экзамену GRE.jpeg" />
+    <Resource Include="Images\Подготовка к экзамену IELTS.jpg" />
+    <Resource Include="Images\Подготовка к экзамену SAT.png" />
+    <Resource Include="Images\Подготовка к экзамену TOEFL.jpg" />
+    <Resource Include="Images\Португальский язык.jpg" />
+    <Resource Include="Images\Французский язык.jpg" />
+    <Resource Include="Images\Японский язык.jpg" />
+    <Resource Include="Resources\school_logo.png" />
+  </ItemGroup>
+
+</Project>
